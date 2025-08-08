@@ -1,0 +1,86 @@
+[
+  {
+    "Id": 1,
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@teamforge.com",
+    "role": "Project Manager",
+    "avatar": ""
+  },
+  {
+    "Id": 2,
+    "name": "Mike Chen",
+    "email": "mike.chen@teamforge.com", 
+    "role": "Senior Developer",
+    "avatar": ""
+  },
+  {
+    "Id": 3,
+    "name": "Emma Rodriguez",
+    "email": "emma.rodriguez@teamforge.com",
+    "role": "UX Designer",
+    "avatar": ""
+  },
+  {
+    "Id": 4,
+    "name": "David Kim",
+    "email": "david.kim@teamforge.com",
+    "role": "DevOps Engineer",
+    "avatar": ""
+  },
+  {
+    "Id": 5,
+    "name": "Lisa Thompson",
+    "email": "lisa.thompson@teamforge.com",
+    "role": "Frontend Developer",
+    "avatar": ""
+  },
+  {
+    "Id": 6,
+    "name": "James Wilson",
+    "email": "james.wilson@teamforge.com",
+    "role": "Backend Developer", 
+    "avatar": ""
+  },
+  {
+    "Id": 7,
+    "name": "Anna Kowalski",
+    "email": "anna.kowalski@teamforge.com",
+    "role": "QA Engineer",
+    "avatar": ""
+  },
+  {
+    "Id": 8,
+    "name": "Robert Martinez",
+    "email": "robert.martinez@teamforge.com",
+    "role": "Data Analyst",
+    "avatar": ""
+  },
+  {
+    "Id": 9,
+    "name": "Jessica Lee",
+    "email": "jessica.lee@teamforge.com",
+    "role": "Technical Lead",
+    "avatar": ""
+  },
+  {
+    "Id": 10,
+    "name": "Thomas Anderson",
+    "email": "thomas.anderson@teamforge.com",
+    "role": "Security Specialist",
+    "avatar": ""
+  },
+  {
+    "Id": 11,
+    "name": "Maria Garcia",
+    "email": "maria.garcia@teamforge.com",
+    "role": "UI Designer",
+    "avatar": ""
+  },
+  {
+    "Id": 12,
+    "name": "Alex Turner",
+    "email": "alex.turner@teamforge.com",
+    "role": "Mobile Developer",
+    "avatar": ""
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "code": "PROJ-001",
+    "name": "E-Commerce Platform Redesign",
+    "description": "Complete redesign of the company's main e-commerce platform with modern UI/UX principles and improved performance.",
+    "startDate": "2024-01-15T00:00:00.000Z",
+    "endDate": "2024-06-30T00:00:00.000Z",
+    "duration": 166,
+    "status": "active"
+  },
+  {
+    "Id": 2,
+    "code": "PROJ-002", 
+    "name": "Mobile App Development",
+    "description": "Native mobile application for iOS and Android platforms with offline capability and real-time synchronization.",
+    "startDate": "2024-02-01T00:00:00.000Z",
+    "endDate": "2024-08-15T00:00:00.000Z",
+    "duration": 196,
+    "status": "active"
+  },
+  {
+    "Id": 3,
+    "code": "PROJ-003",
+    "name": "Data Analytics Dashboard",
+    "description": "Advanced analytics dashboard for business intelligence with real-time data visualization and automated reporting.",
+    "startDate": "2023-10-01T00:00:00.000Z",
+    "endDate": "2024-03-15T00:00:00.000Z",
+    "duration": 166,
+    "status": "completed"
+  },
+  {
+    "Id": 4,
+    "code": "PROJ-004",
+    "name": "API Integration System",
+    "description": "Comprehensive API integration system to connect various third-party services and internal systems.",
+    "startDate": "2024-03-01T00:00:00.000Z",
+    "endDate": "2024-07-31T00:00:00.000Z",
+    "duration": 153,
+    "status": "active"
+  },
+  {
+    "Id": 5,
+    "code": "PROJ-005",
+    "name": "Cloud Migration",
+    "description": "Migration of legacy systems to cloud infrastructure with improved scalability and cost efficiency.",
+    "startDate": "2024-01-10T00:00:00.000Z",
+    "endDate": "2024-05-20T00:00:00.000Z",
+    "duration": 131,
+    "status": "on-hold"
+  },
+  {
+    "Id": 6,
+    "code": "PROJ-006",
+    "name": "Security Enhancement",
+    "description": "Implementation of advanced security measures including multi-factor authentication and encrypted data storage.",
+    "startDate": "2023-11-15T00:00:00.000Z",
+    "endDate": "2024-02-28T00:00:00.000Z",
+    "duration": 105,
+    "status": "completed"
+  },
+  {
+    "Id": 7,
+    "code": "PROJ-007",
+    "name": "Customer Portal",
+    "description": "Self-service customer portal with account management, order tracking, and support ticketing system.",
+    "startDate": "2024-04-01T00:00:00.000Z",
+    "endDate": "2024-09-30T00:00:00.000Z",
+    "duration": 183,
+    "status": "active"
+  },
+  {
+    "Id": 8,
+    "code": "PROJ-008",
+    "name": "Inventory Management System",
+    "description": "Real-time inventory tracking system with automated reordering and supplier integration.",
+    "startDate": "2024-02-15T00:00:00.000Z",
+    "endDate": "2024-06-15T00:00:00.000Z",
+    "duration": 121,
+    "status": "active"
+  }
+]

@@ -1,0 +1,158 @@
+[
+  {
+    "projectId": 1,
+    "memberId": 1,
+    "role": "Project Manager",
+    "joinedAt": "2024-01-15T00:00:00.000Z"
+  },
+  {
+    "projectId": 1,
+    "memberId": 3,
+    "role": "UX Designer",
+    "joinedAt": "2024-01-16T00:00:00.000Z"
+  },
+  {
+    "projectId": 1,
+    "memberId": 5,
+    "role": "Frontend Developer",
+    "joinedAt": "2024-01-18T00:00:00.000Z"
+  },
+  {
+    "projectId": 1,
+    "memberId": 6,
+    "role": "Backend Developer",
+    "joinedAt": "2024-01-18T00:00:00.000Z"
+  },
+  {
+    "projectId": 1,
+    "memberId": 7,
+    "role": "QA Engineer",
+    "joinedAt": "2024-01-20T00:00:00.000Z"
+  },
+  {
+    "projectId": 2,
+    "memberId": 1,
+    "role": "Project Manager",
+    "joinedAt": "2024-02-01T00:00:00.000Z"
+  },
+  {
+    "projectId": 2,
+    "memberId": 12,
+    "role": "Mobile Developer",
+    "joinedAt": "2024-02-02T00:00:00.000Z"
+  },
+  {
+    "projectId": 2,
+    "memberId": 6,
+    "role": "Backend Developer",
+    "joinedAt": "2024-02-05T00:00:00.000Z"
+  },
+  {
+    "projectId": 2,
+    "memberId": 7,
+    "role": "QA Engineer",
+    "joinedAt": "2024-02-08T00:00:00.000Z"
+  },
+  {
+    "projectId": 3,
+    "memberId": 1,
+    "role": "Project Manager",
+    "joinedAt": "2023-10-01T00:00:00.000Z"
+  },
+  {
+    "projectId": 3,
+    "memberId": 8,
+    "role": "Data Analyst",
+    "joinedAt": "2023-10-02T00:00:00.000Z"
+  },
+  {
+    "projectId": 3,
+    "memberId": 5,
+    "role": "Frontend Developer",
+    "joinedAt": "2023-10-05T00:00:00.000Z"
+  },
+  {
+    "projectId": 4,
+    "memberId": 9,
+    "role": "Technical Lead",
+    "joinedAt": "2024-03-01T00:00:00.000Z"
+  },
+  {
+    "projectId": 4,
+    "memberId": 2,
+    "role": "Senior Developer",
+    "joinedAt": "2024-03-02T00:00:00.000Z"
+  },
+  {
+    "projectId": 4,
+    "memberId": 6,
+    "role": "Backend Developer",
+    "joinedAt": "2024-03-05T00:00:00.000Z"
+  },
+  {
+    "projectId": 5,
+    "memberId": 4,
+    "role": "DevOps Engineer",
+    "joinedAt": "2024-01-10T00:00:00.000Z"
+  },
+  {
+    "projectId": 5,
+    "memberId": 9,
+    "role": "Technical Lead",
+    "joinedAt": "2024-01-12T00:00:00.000Z"
+  },
+  {
+    "projectId": 6,
+    "memberId": 10,
+    "role": "Security Specialist",
+    "joinedAt": "2023-11-15T00:00:00.000Z"
+  },
+  {
+    "projectId": 6,
+    "memberId": 2,
+    "role": "Senior Developer",
+    "joinedAt": "2023-11-20T00:00:00.000Z"
+  },
+  {
+    "projectId": 7,
+    "memberId": 1,
+    "role": "Project Manager",
+    "joinedAt": "2024-04-01T00:00:00.000Z"
+  },
+  {
+    "projectId": 7,
+    "memberId": 11,
+    "role": "UI Designer",
+    "joinedAt": "2024-04-02T00:00:00.000Z"
+  },
+  {
+    "projectId": 7,
+    "memberId": 5,
+    "role": "Frontend Developer",
+    "joinedAt": "2024-04-05T00:00:00.000Z"
+  },
+  {
+    "projectId": 7,
+    "memberId": 6,
+    "role": "Backend Developer",
+    "joinedAt": "2024-04-05T00:00:00.000Z"
+  },
+  {
+    "projectId": 8,
+    "memberId": 1,
+    "role": "Project Manager",
+    "joinedAt": "2024-02-15T00:00:00.000Z"
+  },
+  {
+    "projectId": 8,
+    "memberId": 6,
+    "role": "Backend Developer",
+    "joinedAt": "2024-02-16T00:00:00.000Z"
+  },
+  {
+    "projectId": 8,
+    "memberId": 9,
+    "role": "Technical Lead",
+    "joinedAt": "2024-02-18T00:00:00.000Z"
+  }
+]
