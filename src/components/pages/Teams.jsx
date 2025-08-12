@@ -607,16 +607,15 @@ onClick: openMemberModal,
                 </Card>
               </motion.div>
             );
-          })}
+})}
         </div>
 )}
-    </div>
-    
-    <>
+      
+      {/* Modals */}
       <MemberModal />
       <ContactModal />
       <ViewModal />
-    </>
+    </div>
   );
 };
 export default Teams;
