@@ -59,17 +59,17 @@ const [teamMembers, setTeamMembers] = useState([]);
   }, []);
 
   const getMemberProjects = (memberId) => {
-    const memberAssignments = assignments.filter(a => a.memberId === memberId);
+const memberAssignments = assignments.filter(a => a.member_id_c === memberId);
     return memberAssignments.map(assignment => {
-      const project = projects.find(p => p.Id === assignment.projectId);
-      return project ? { ...project, role: assignment.role } : null;
+      const project = projects.find(p => p.Id === assignment.project_id_c);
+      return project ? { ...project, role: assignment.role_c } : null;
     }).filter(Boolean);
   };
 
-  const filteredMembers = teamMembers.filter(member =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.email.toLowerCase().includes(searchTerm.toLowerCase())
+const filteredMembers = teamMembers.filter(member =>
+    member.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.role_c?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member.email_c?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getRoleColor = (role) => {
@@ -163,9 +163,9 @@ const [teamMembers, setTeamMembers] = useState([]);
   };
 
   const handleSendEmail = (member) => {
-    const subject = encodeURIComponent("TeamForge Contact");
-    const body = encodeURIComponent(`Hi ${member.name},\n\nI hope this message finds you well.\n\nBest regards`);
-    window.open(`mailto:${member.email}?subject=${subject}&body=${body}`, '_blank');
+const subject = encodeURIComponent("TeamForge Contact");
+    const body = encodeURIComponent(`Hi ${member.Name},\n\nI hope this message finds you well.\n\nBest regards`);
+    window.open(`mailto:${member.email_c}?subject=${subject}&body=${body}`, '_blank');
     toast.success("Email client opened!");
     closeContactModal();
   };
@@ -287,8 +287,8 @@ const [teamMembers, setTeamMembers] = useState([]);
             className="bg-white rounded-xl p-6 w-full max-w-md"
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-slate-900">
-                Contact {selectedMember.name}
+<h3 className="text-lg font-semibold text-slate-900">
+                Contact {selectedMember.Name}
               </h3>
               <Button variant="ghost" size="sm" onClick={closeContactModal}>
                 <ApperIcon name="X" className="w-4 h-4" />
@@ -299,9 +299,9 @@ const [teamMembers, setTeamMembers] = useState([]);
               <div className="flex items-center space-x-4 p-4 bg-slate-50 rounded-lg">
                 <TeamMemberAvatar member={selectedMember} size="lg" />
                 <div>
-                  <h4 className="font-medium text-slate-900">{selectedMember.name}</h4>
-                  <p className="text-sm text-slate-600">{selectedMember.role}</p>
-                  <p className="text-sm text-slate-500">{selectedMember.email}</p>
+<h4 className="font-medium text-slate-900">{selectedMember.Name}</h4>
+                  <p className="text-sm text-slate-600">{selectedMember.role_c}</p>
+                  <p className="text-sm text-slate-500">{selectedMember.email_c}</p>
                 </div>
               </div>
 
@@ -317,7 +317,7 @@ const [teamMembers, setTeamMembers] = useState([]);
                 <Button
                   variant="outline"
                   onClick={() => {
-                    navigator.clipboard.writeText(selectedMember.email);
+navigator.clipboard.writeText(selectedMember.email_c);
                     toast.success("Email copied to clipboard!");
                   }}
                   className="w-full"
@@ -363,9 +363,9 @@ const [teamMembers, setTeamMembers] = useState([]);
               <div className="flex items-center space-x-4 p-4 bg-slate-50 rounded-lg">
                 <TeamMemberAvatar member={selectedMember} size="xl" />
                 <div>
-                  <h4 className="text-xl font-semibold text-slate-900">{selectedMember.name}</h4>
-                  <p className="text-slate-600">{selectedMember.role}</p>
-                  <p className="text-sm text-slate-500">{selectedMember.email}</p>
+<h4 className="text-xl font-semibold text-slate-900">{selectedMember.Name}</h4>
+                  <p className="text-slate-600">{selectedMember.role_c}</p>
+                  <p className="text-sm text-slate-500">{selectedMember.email_c}</p>
                 </div>
               </div>
 
@@ -375,9 +375,9 @@ const [teamMembers, setTeamMembers] = useState([]);
                 <div className="space-y-3">
                   {getMemberProjects(selectedMember.Id).map((project) => (
                     <div key={project.Id} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg">
-                      <div>
-                        <h6 className="font-medium text-slate-900">{project.code}</h6>
-                        <p className="text-sm text-slate-600">{project.name}</p>
+<div>
+                        <h6 className="font-medium text-slate-900">{project.code_c}</h6>
+                        <p className="text-sm text-slate-600">{project.Name}</p>
                       </div>
                       <Badge variant={getRoleColor(project.role)} className="text-xs">
                         {project.role}
@@ -479,7 +479,7 @@ const [teamMembers, setTeamMembers] = useState([]);
               </div>
               <div>
                 <p className="text-sm font-medium text-green-600">Active Projects</p>
-                <p className="text-2xl font-bold text-green-900">{projects.filter(p => p.status === "active").length}</p>
+<p className="text-2xl font-bold text-green-900">{projects.filter(p => p.status_c === "active").length}</p>
               </div>
             </div>
           </CardContent>
@@ -494,7 +494,7 @@ const [teamMembers, setTeamMembers] = useState([]);
               <div>
                 <p className="text-sm font-medium text-purple-600">Managers</p>
                 <p className="text-2xl font-bold text-purple-900">
-                  {teamMembers.filter(m => m.role.toLowerCase().includes("manager")).length}
+{teamMembers.filter(m => m.role_c?.toLowerCase().includes("manager")).length}
                 </p>
               </div>
             </div>
@@ -510,7 +510,7 @@ const [teamMembers, setTeamMembers] = useState([]);
               <div>
                 <p className="text-sm font-medium text-orange-600">Developers</p>
                 <p className="text-2xl font-bold text-orange-900">
-                  {teamMembers.filter(m => m.role.toLowerCase().includes("developer")).length}
+{teamMembers.filter(m => m.role_c?.toLowerCase().includes("developer")).length}
                 </p>
               </div>
             </div>
@@ -546,11 +546,11 @@ onClick: openMemberModal,
                     <div className="flex flex-col items-center space-y-3">
                       <TeamMemberAvatar member={member} size="lg" />
                       <div>
-                        <CardTitle className="text-lg">{member.name}</CardTitle>
-                        <p className="text-sm text-slate-600">{member.email}</p>
+<CardTitle className="text-lg">{member.Name}</CardTitle>
+                        <p className="text-sm text-slate-600">{member.email_c}</p>
                       </div>
-                      <Badge variant={getRoleColor(member.role)} className="px-3 py-1">
-                        {member.role}
+<Badge variant={getRoleColor(member.role_c)} className="px-3 py-1">
+                        {member.role_c}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -567,7 +567,7 @@ onClick: openMemberModal,
                           <div className="space-y-2">
                             {memberProjects.slice(0, 3).map((project) => (
                               <div key={project.Id} className="flex items-center justify-between text-sm">
-                                <span className="text-slate-600 truncate flex-1">{project.code}</span>
+<span className="text-slate-600 truncate flex-1">{project.code_c}</span>
                                 <Badge variant="default" className="text-xs ml-2">
                                   {project.role}
                                 </Badge>

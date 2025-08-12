@@ -50,10 +50,10 @@ const Dashboard = () => {
     loadDashboardData();
   }, []);
 
-  const getProjectMetrics = () => {
-    const activeProjects = projects.filter(p => p.status === "active");
-    const completedProjects = projects.filter(p => p.status === "completed");
-    const onHoldProjects = projects.filter(p => p.status === "on-hold");
+const getProjectMetrics = () => {
+    const activeProjects = projects.filter(p => p.status_c === "active");
+    const completedProjects = projects.filter(p => p.status_c === "completed");
+    const onHoldProjects = projects.filter(p => p.status_c === "on-hold");
     const totalTasks = tasks.length;
 
     return {
@@ -64,17 +64,17 @@ const Dashboard = () => {
     };
   };
 
-  const getProjectTeamCount = (projectId) => {
-    return assignments.filter(a => a.projectId === projectId).length;
+const getProjectTeamCount = (projectId) => {
+    return assignments.filter(a => a.project_id_c === projectId).length;
   };
 
-  const getProjectTaskCount = (projectId) => {
-    return tasks.filter(t => t.projectId === projectId).length;
+const getProjectTaskCount = (projectId) => {
+    return tasks.filter(t => t.project_id_c === projectId).length;
   };
 
   const getRecentProjects = () => {
-    return projects
-      .sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
+return projects
+      .sort((a, b) => new Date(b.start_date_c) - new Date(a.start_date_c))
       .slice(0, 6);
   };
 

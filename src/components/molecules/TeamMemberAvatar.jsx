@@ -31,11 +31,11 @@ const TeamMemberAvatar = ({ member, size = "md", className }) => {
     return colors[index];
   };
 
-  if (member.avatar) {
+if (member.avatar_c) {
     return (
       <img
-        src={member.avatar}
-        alt={member.name}
+        src={member.avatar_c}
+        alt={member.Name}
         className={cn(
           "rounded-full border-2 border-white shadow-lg object-cover",
           sizes[size],
@@ -49,12 +49,12 @@ const TeamMemberAvatar = ({ member, size = "md", className }) => {
     <div
       className={cn(
         "rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white font-semibold",
-        sizes[size],
-        getAvatarColor(member.name),
+sizes[size],
+        getAvatarColor(member.Name),
         className
       )}
     >
-      {getInitials(member.name)}
+{getInitials(member.Name)}
     </div>
   );
 };

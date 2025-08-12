@@ -56,8 +56,8 @@ const [project, setProject] = useState(null);
 
       setProject(projectData);
       setTeamMembers(allTeamMembers);
-      setTasks(projectTasks.filter(t => t.projectId === parseInt(id)));
-      setAssignments(projectAssignments.filter(a => a.projectId === parseInt(id)));
+setTasks(projectTasks.filter(t => t.project_id_c === parseInt(id)));
+      setAssignments(projectAssignments.filter(a => a.project_id_c === parseInt(id)));
     } catch (err) {
       setError("Failed to load project details. Please try again.");
       console.error("Project detail load error:", err);
@@ -72,26 +72,25 @@ const [project, setProject] = useState(null);
     }
   }, [id]);
 
-  const getAssignedTeamMembers = () => {
+const getAssignedTeamMembers = () => {
     return assignments
-      .map(assignment => {
-        const member = teamMembers.find(m => m.Id === assignment.memberId);
-        return member ? { ...member, role: assignment.role } : null;
+      .map((assignment) => {
+        const member = teamMembers.find(m => m.Id === assignment.member_id_c);
+        return member ? { ...member, role: assignment.role_c } : null;
       })
       .filter(Boolean);
   };
 
-  const getTaskStatusCounts = () => {
-    const completed = tasks.filter(t => t.status === "completed").length;
-    const inProgress = tasks.filter(t => t.status === "in-progress").length;
-    const todo = tasks.filter(t => t.status === "todo").length;
+const getTaskStatusCounts = () => {
+    const completed = tasks.filter(t => t.status_c === "completed").length;
+    const inProgress = tasks.filter(t => t.status_c === "in-progress").length;
+    const todo = tasks.filter(t => t.status_c === "todo").length;
     return { completed, inProgress, todo, total: tasks.length };
   };
 
-  const getProjectProgress = () => {
-    if (!project) return 0;
-    const startDate = new Date(project.startDate);
-    const endDate = new Date(project.endDate);
+const getProjectProgress = () => {
+    const startDate = new Date(project.start_date_c);
+    const endDate = new Date(project.end_date_c);
     const today = new Date();
     const totalDays = differenceInDays(endDate, startDate);
     const daysElapsed = Math.max(0, differenceInDays(today, startDate));
@@ -194,7 +193,7 @@ const [project, setProject] = useState(null);
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-slate-900">
-                Add Task to {project?.name}
+Add Task to {project?.Name}
               </h3>
               <Button variant="ghost" size="sm" onClick={closeTaskModal}>
                 <ApperIcon name="X" className="w-4 h-4" />
@@ -345,12 +344,12 @@ const [project, setProject] = useState(null);
             Back to Projects
           </Button>
           <div>
-            <h1 className="text-3xl font-bold gradient-text">{project.code}</h1>
-            <p className="text-lg text-slate-600 font-medium">{project.name}</p>
+<h1 className="text-3xl font-bold gradient-text">{project.code_c}</h1>
+            <p className="text-lg text-slate-600 font-medium">{project.Name}</p>
           </div>
         </div>
-        <Badge variant={getStatusVariant(project.status)} className="text-sm px-4 py-2">
-          {project.status}
+<Badge variant={getStatusVariant(project.status_c)} className="text-sm px-4 py-2">
+          {project.status_c}
         </Badge>
       </motion.div>
 
@@ -380,15 +379,15 @@ const [project, setProject] = useState(null);
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-600">Start Date</span>
-                <span className="font-medium">{format(new Date(project.startDate), "MMM dd, yyyy")}</span>
+<span className="font-medium">{format(new Date(project.start_date_c), "MMM dd, yyyy")}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">End Date</span>
-                <span className="font-medium">{format(new Date(project.endDate), "MMM dd, yyyy")}</span>
+                <span className="font-medium">{format(new Date(project.end_date_c), "MMM dd, yyyy")}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Duration</span>
-                <span className="font-medium">{project.duration} days</span>
+<span className="font-medium">{project.duration_c} days</span>
               </div>
             </div>
           </CardContent>
@@ -469,13 +468,13 @@ const [project, setProject] = useState(null);
       </div>
 
       {/* Description */}
-      {project.description && (
+{project.description_c && (
         <Card className="card-hover">
           <CardHeader>
             <CardTitle>Description</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-slate-700 leading-relaxed">{project.description}</p>
+            <p className="text-slate-700 leading-relaxed">{project.description_c}</p>
           </CardContent>
         </Card>
       )}
@@ -504,8 +503,8 @@ label: "Add Task",
             />
           ) : (
             <div className="space-y-3">
-              {tasks.map((task) => {
-                const assignee = teamMembers.find(m => m.Id === task.assigneeId);
+{tasks.map((task) => {
+                const assignee = teamMembers.find(m => m.Id === task.assignee_id_c);
                 
                 return (
                   <motion.div
@@ -515,19 +514,19 @@ label: "Add Task",
                     className="flex items-center space-x-4 p-4 bg-gradient-to-r from-slate-50 to-white rounded-lg border border-slate-200 hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex-1">
-                      <h4 className="font-medium text-slate-900">{task.title}</h4>
-                      {task.dueDate && (
+<h4 className="font-medium text-slate-900">{task.title_c}</h4>
+                      {task.due_date_c && (
                         <p className="text-sm text-slate-500">
-                          Due: {format(new Date(task.dueDate), "MMM dd, yyyy")}
+                          Due: {format(new Date(task.due_date_c), "MMM dd, yyyy")}
                         </p>
                       )}
                     </div>
                     <div className="flex items-center space-x-3">
-                      <Badge variant={getPriorityVariant(task.priority)} className="text-xs">
-                        {task.priority}
+<Badge variant={getPriorityVariant(task.priority_c)} className="text-xs">
+                        {task.priority_c}
                       </Badge>
-                      <Badge variant={getStatusVariant(task.status)} className="text-xs">
-                        {task.status}
+                      <Badge variant={getStatusVariant(task.status_c)} className="text-xs">
+                        {task.status_c}
                       </Badge>
                       {assignee && (
                         <TeamMemberAvatar member={assignee} size="sm" />

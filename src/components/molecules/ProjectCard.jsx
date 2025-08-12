@@ -6,8 +6,8 @@ import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
 
 const ProjectCard = ({ project, teamCount, taskCount, onClick, className }) => {
-  const startDate = new Date(project.startDate);
-  const endDate = new Date(project.endDate);
+const startDate = new Date(project.start_date_c);
+  const endDate = new Date(project.end_date_c);
   const today = new Date();
   const totalDays = differenceInDays(endDate, startDate);
   const daysElapsed = Math.max(0, differenceInDays(today, startDate));
@@ -52,13 +52,13 @@ const ProjectCard = ({ project, teamCount, taskCount, onClick, className }) => {
         <CardHeader>
           <div className="flex items-start justify-between">
             <div>
-              <CardTitle className="gradient-text text-xl font-bold">
-                {project.code}
+<CardTitle className="gradient-text text-xl font-bold">
+                {project.code_c}
               </CardTitle>
-              <p className="text-sm text-slate-600 mt-1 font-medium">{project.name}</p>
+              <p className="text-sm text-slate-600 mt-1 font-medium">{project.Name}</p>
             </div>
-            <Badge variant={getStatusVariant(project.status)} className="text-xs font-semibold">
-              {project.status}
+<Badge variant={getStatusVariant(project.status_c)} className="text-xs font-semibold">
+              {project.status_c}
             </Badge>
           </div>
         </CardHeader>
@@ -67,7 +67,7 @@ const ProjectCard = ({ project, teamCount, taskCount, onClick, className }) => {
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
               <span className="text-slate-600 font-medium">Timeline</span>
-              <span className="text-slate-900 font-semibold">{project.duration} days</span>
+<span className="text-slate-900 font-semibold">{project.duration_c} days</span>
             </div>
             <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
               <div
@@ -104,9 +104,9 @@ const ProjectCard = ({ project, teamCount, taskCount, onClick, className }) => {
           </div>
 
           {/* Description */}
-          {project.description && (
+{project.description_c && (
             <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed">
-              {project.description}
+              {project.description_c}
             </p>
           )}
         </CardContent>

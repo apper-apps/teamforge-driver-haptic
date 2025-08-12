@@ -79,27 +79,27 @@ const Projects = () => {
     }
   };
 
-  const getProjectTeamCount = (projectId) => {
-    return assignments.filter(a => a.projectId === projectId).length;
+const getProjectTeamCount = (projectId) => {
+    return assignments.filter(a => a.project_id_c === projectId).length;
   };
 
-  const getProjectTaskCount = (projectId) => {
-    return tasks.filter(t => t.projectId === projectId).length;
+const getProjectTaskCount = (projectId) => {
+    return tasks.filter(t => t.project_id_c === projectId).length;
   };
 
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.code.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || project.status === statusFilter;
+const filteredProjects = projects.filter(project => {
+    const matchesSearch = project.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         project.code_c?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === "all" || project.status_c === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const getStatusCounts = () => {
     return {
-      all: projects.length,
-      active: projects.filter(p => p.status === "active").length,
-      completed: projects.filter(p => p.status === "completed").length,
-      "on-hold": projects.filter(p => p.status === "on-hold").length
+all: projects.length,
+      active: projects.filter(p => p.status_c === "active").length,
+      completed: projects.filter(p => p.status_c === "completed").length,
+      "on-hold": projects.filter(p => p.status_c === "on-hold").length
     };
   };
 

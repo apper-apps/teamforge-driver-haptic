@@ -9,12 +9,12 @@ import { cn } from "@/utils/cn";
 
 const ProjectForm = ({ project, onSubmit, onCancel, className }) => {
   const [formData, setFormData] = useState({
-    code: project?.code || "",
-    name: project?.name || "",
-    description: project?.description || "",
-    startDate: project?.startDate ? format(new Date(project.startDate), "yyyy-MM-dd") : "",
-    endDate: project?.endDate ? format(new Date(project.endDate), "yyyy-MM-dd") : "",
-    status: project?.status || "active"
+code: project?.code_c || "",
+    name: project?.Name || "",
+    description: project?.description_c || "",
+    startDate: project?.start_date_c ? format(new Date(project.start_date_c), "yyyy-MM-dd") : "",
+    endDate: project?.end_date_c ? format(new Date(project.end_date_c), "yyyy-MM-dd") : "",
+    status: project?.status_c || "active"
   });
 
   const [errors, setErrors] = useState({});

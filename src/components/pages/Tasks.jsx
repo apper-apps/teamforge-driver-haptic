@@ -70,28 +70,27 @@ const [tasks, setTasks] = useState([]);
     return teamMembers.find(m => m.Id === assigneeId);
   };
 
-  const filteredTasks = tasks.filter(task => {
-    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || task.status === statusFilter;
-    const matchesPriority = priorityFilter === "all" || task.priority === priorityFilter;
+const filteredTasks = tasks.filter(task => {
+    const matchesSearch = task.title_c?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === "all" || task.status_c === statusFilter;
+    const matchesPriority = priorityFilter === "all" || task.priority_c === priorityFilter;
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
-  const getStatusCounts = () => {
+const getStatusCounts = () => {
     return {
-      all: tasks.length,
-      todo: tasks.filter(t => t.status === "todo").length,
-      "in-progress": tasks.filter(t => t.status === "in-progress").length,
-      completed: tasks.filter(t => t.status === "completed").length
+      todo: tasks.filter(t => t.status_c === "todo").length,
+      "in-progress": tasks.filter(t => t.status_c === "in-progress").length,
+      completed: tasks.filter(t => t.status_c === "completed").length
     };
   };
 
   const getPriorityCounts = () => {
-    return {
+return {
       all: tasks.length,
-      high: tasks.filter(t => t.priority === "high").length,
-      medium: tasks.filter(t => t.priority === "medium").length,
-      low: tasks.filter(t => t.priority === "low").length
+      high: tasks.filter(t => t.priority_c === "high").length,
+      medium: tasks.filter(t => t.priority_c === "medium").length,
+      low: tasks.filter(t => t.priority_c === "low").length
     };
   };
 
@@ -127,13 +126,13 @@ const priorityCounts = getPriorityCounts();
   const openTaskModal = (task = null) => {
     if (task) {
       setEditingTask(task);
-      setTaskFormData({
-        title: task.title,
-        projectId: task.projectId.toString(),
-        assigneeId: task.assigneeId?.toString() || "",
-        status: task.status,
-        priority: task.priority,
-        dueDate: task.dueDate ? format(new Date(task.dueDate), "yyyy-MM-dd") : ""
+setTaskFormData({
+        title: task.title_c,
+        projectId: task.project_id_c?.toString(),
+        assigneeId: task.assignee_id_c?.toString() || "",
+        status: task.status_c,
+        priority: task.priority_c,
+        dueDate: task.due_date_c ? format(new Date(task.due_date_c), "yyyy-MM-dd") : ""
       });
     } else {
       setEditingTask(null);
@@ -275,11 +274,11 @@ const priorityCounts = getPriorityCounts();
                   onChange={(e) => handleTaskFormChange("projectId", e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   required
-                >
+>
                   <option value="">Select a project</option>
                   {projects.map(project => (
                     <option key={project.Id} value={project.Id}>
-                      {project.code} - {project.name}
+                      {project.code_c} - {project.Name}
                     </option>
                   ))}
                 </select>
@@ -297,7 +296,7 @@ const priorityCounts = getPriorityCounts();
                   <option value="">Unassigned</option>
                   {teamMembers.map(member => (
                     <option key={member.Id} value={member.Id}>
-                      {member.name} - {member.role}
+{member.Name} - {member.role_c}
                     </option>
                   ))}
                 </select>
@@ -546,8 +545,8 @@ action={!searchTerm && statusFilter === "all" && priorityFilter === "all" ? {
       ) : (
         <div className="space-y-4">
           {filteredTasks.map((task) => {
-            const project = getTaskProject(task.projectId);
-            const assignee = getTaskAssignee(task.assigneeId);
+const project = getTaskProject(task.project_id_c);
+            const assignee = getTaskAssignee(task.assignee_id_c);
             
             return (
               <motion.div
@@ -561,10 +560,10 @@ action={!searchTerm && statusFilter === "all" && priorityFilter === "all" ? {
                     <div className="flex items-start justify-between">
                       <div className="flex-1 space-y-3">
                         <div>
-                          <h3 className="text-lg font-semibold text-slate-900">{task.title}</h3>
+<h3 className="text-lg font-semibold text-slate-900">{task.title_c}</h3>
                           {project && (
                             <p className="text-sm text-slate-600">
-                              Project: <span className="font-medium">{project.code} - {project.name}</span>
+                              Project: <span className="font-medium">{project.code_c} - {project.Name}</span>
                             </p>
                           )}
                         </div>
@@ -572,12 +571,12 @@ action={!searchTerm && statusFilter === "all" && priorityFilter === "all" ? {
                         <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600">
                           <div className="flex items-center space-x-2">
                             <ApperIcon name="Calendar" className="w-4 h-4" />
-                            <span>Created: {format(new Date(task.createdAt), "MMM dd, yyyy")}</span>
+<span>Created: {format(new Date(task.created_at_c), "MMM dd, yyyy")}</span>
                           </div>
-                          {task.dueDate && (
+                          {task.due_date_c && (
                             <div className="flex items-center space-x-2">
                               <ApperIcon name="Clock" className="w-4 h-4" />
-                              <span>Due: {format(new Date(task.dueDate), "MMM dd, yyyy")}</span>
+                              <span>Due: {format(new Date(task.due_date_c), "MMM dd, yyyy")}</span>
                             </div>
                           )}
                         </div>
@@ -585,11 +584,11 @@ action={!searchTerm && statusFilter === "all" && priorityFilter === "all" ? {
                       
                       <div className="flex items-center space-x-4 ml-4">
                         <div className="flex items-center space-x-2">
-                          <Badge variant={getPriorityVariant(task.priority)} className="text-xs">
-                            {task.priority}
+<Badge variant={getPriorityVariant(task.priority_c)} className="text-xs">
+                            {task.priority_c}
                           </Badge>
-                          <Badge variant={getStatusVariant(task.status)} className="text-xs">
-                            {task.status}
+                          <Badge variant={getStatusVariant(task.status_c)} className="text-xs">
+                            {task.status_c}
                           </Badge>
                         </div>
                         
@@ -597,8 +596,8 @@ action={!searchTerm && statusFilter === "all" && priorityFilter === "all" ? {
                           <div className="flex items-center space-x-2">
                             <TeamMemberAvatar member={assignee} size="sm" />
                             <div className="text-right">
-                              <p className="text-sm font-medium text-slate-900">{assignee.name}</p>
-                              <p className="text-xs text-slate-500">{assignee.role}</p>
+<p className="text-sm font-medium text-slate-900">{assignee.Name}</p>
+                              <p className="text-xs text-slate-500">{assignee.role_c}</p>
                             </div>
                           </div>
                         )}
@@ -622,8 +621,8 @@ action={!searchTerm && statusFilter === "all" && priorityFilter === "all" ? {
                             <ApperIcon name="Trash2" className="w-4 h-4" />
                           </Button>
                           <div className="relative">
-                            <select
-                              value={task.status}
+<select
+                              value={task.status_c}
                               onChange={(e) => handleStatusUpdate(task.Id, e.target.value)}
                               className="text-xs px-2 py-1 border border-slate-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
                               title="Change status"
@@ -641,8 +640,8 @@ action={!searchTerm && statusFilter === "all" && priorityFilter === "all" ? {
               </motion.div>
             );
           })}
-        </div>
-)}
+</div>
+      )}
       
       <TaskModal />
     </div>
