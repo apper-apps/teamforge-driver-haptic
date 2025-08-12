@@ -537,10 +537,9 @@ label: "Add Task",
                 );
               })}
             </div>
-          )}
+)}
         </CardContent>
       </Card>
-</Card>
 
       <TaskModal />
     </div>

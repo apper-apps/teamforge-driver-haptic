@@ -609,12 +609,14 @@ onClick: openMemberModal,
             );
           })}
         </div>
-      )}
-</div>
-    <MemberModal />
-    <ContactModal />
-    <ViewModal />
+)}
+    </div>
+    
+    <>
+      <MemberModal />
+      <ContactModal />
+      <ViewModal />
+    </>
   );
 };
-
 export default Teams;
