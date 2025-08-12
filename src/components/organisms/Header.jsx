@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useSelector } from 'react-redux';
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
-import { AuthContext } from "@/components/AuthApp";
+import { AuthContext } from "@/App";
 
 const Header = ({ onMobileMenuToggle, title = "TeamForge" }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
