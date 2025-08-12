@@ -1,31 +1,42 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { format, differenceInDays } from "date-fns";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { differenceInDays, format } from "date-fns";
 import { toast } from "react-toastify";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/atoms/Card";
-import Badge from "@/components/atoms/Badge";
-import Button from "@/components/atoms/Button";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import TeamMemberAvatar from "@/components/molecules/TeamMemberAvatar";
-import ApperIcon from "@/components/ApperIcon";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
 import { projectsService } from "@/services/api/projectsService";
 import { teamsService } from "@/services/api/teamsService";
 import { tasksService } from "@/services/api/tasksService";
 import { projectAssignmentsService } from "@/services/api/projectAssignmentsService";
-
+import ApperIcon from "@/components/ApperIcon";
+import TeamMemberAvatar from "@/components/molecules/TeamMemberAvatar";
+import Loading from "@/components/ui/Loading";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Input from "@/components/atoms/Input";
+import Projects from "@/components/pages/Projects";
+import Tasks from "@/components/pages/Tasks";
+import { cn } from "@/utils/cn";
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [project, setProject] = useState(null);
+const [project, setProject] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [taskFormData, setTaskFormData] = useState({
+    title: "",
+    assigneeId: "",
+    status: "todo",
+    priority: "medium",
+    dueDate: ""
+  });
+  const [submitting, setSubmitting] = useState(false);
   const loadProjectData = async () => {
     try {
       setLoading(true);
@@ -110,7 +121,194 @@ const ProjectDetail = () => {
       case "low": return "success";
       default: return "default";
     }
+};
+
+  const openTaskModal = () => {
+    setTaskFormData({
+      title: "",
+      assigneeId: "",
+      status: "todo",
+      priority: "medium",
+      dueDate: ""
+    });
+    setShowTaskModal(true);
   };
+
+  const closeTaskModal = () => {
+    setShowTaskModal(false);
+    setTaskFormData({
+      title: "",
+      assigneeId: "",
+      status: "todo",
+      priority: "medium",
+      dueDate: ""
+    });
+  };
+
+  const handleTaskFormChange = (field, value) => {
+    setTaskFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const validateTaskForm = () => {
+    if (!taskFormData.title.trim()) {
+      toast.error("Task title is required");
+      return false;
+    }
+    return true;
+  };
+
+  const handleTaskSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateTaskForm()) return;
+
+    try {
+      setSubmitting(true);
+      const taskData = {
+        ...taskFormData,
+        projectId: parseInt(id),
+        assigneeId: taskFormData.assigneeId ? parseInt(taskFormData.assigneeId) : null,
+        dueDate: taskFormData.dueDate || null
+      };
+
+      await tasksService.create(taskData);
+      toast.success("Task created successfully!");
+      await loadProjectData();
+      closeTaskModal();
+    } catch (err) {
+      toast.error("Failed to create task");
+      console.error("Task submit error:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const TaskModal = () => (
+    <AnimatePresence>
+      {showTaskModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-slate-900">
+                Add Task to {project?.name}
+              </h3>
+              <Button variant="ghost" size="sm" onClick={closeTaskModal}>
+                <ApperIcon name="X" className="w-4 h-4" />
+              </Button>
+            </div>
+
+            <form onSubmit={handleTaskSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Task Title *
+                </label>
+                <Input
+                  type="text"
+                  value={taskFormData.title}
+                  onChange={(e) => handleTaskFormChange("title", e.target.value)}
+                  placeholder="Enter task title"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Assignee
+                </label>
+                <select
+                  value={taskFormData.assigneeId}
+                  onChange={(e) => handleTaskFormChange("assigneeId", e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="">Unassigned</option>
+                  {getAssignedTeamMembers().map(member => (
+                    <option key={member.Id} value={member.Id}>
+                      {member.name} - {member.role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Status
+                  </label>
+                  <select
+                    value={taskFormData.status}
+                    onChange={(e) => handleTaskFormChange("status", e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="todo">To Do</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Priority
+                  </label>
+                  <select
+                    value={taskFormData.priority}
+                    onChange={(e) => handleTaskFormChange("priority", e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Due Date
+                </label>
+                <Input
+                  type="date"
+                  value={taskFormData.dueDate}
+                  onChange={(e) => handleTaskFormChange("dueDate", e.target.value)}
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex-1"
+                >
+                  {submitting ? (
+                    <>
+                      <ApperIcon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
+                      Add Task
+                    </>
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={closeTaskModal}
+                  disabled={submitting}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
 
   if (loading) {
     return <Loading />;
@@ -287,7 +485,7 @@ const ProjectDetail = () => {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Tasks</span>
-            <Button size="sm">
+<Button onClick={openTaskModal} size="sm">
               <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
               Add Task
             </Button>
@@ -299,8 +497,8 @@ const ProjectDetail = () => {
               title="No tasks yet"
               description="Create the first task for this project"
               action={{
-                label: "Add Task",
-                onClick: () => toast.info("Task creation coming soon!"),
+label: "Add Task",
+                onClick: openTaskModal,
                 icon: "Plus"
               }}
             />
@@ -342,6 +540,9 @@ const ProjectDetail = () => {
           )}
         </CardContent>
       </Card>
+</Card>
+
+      <TaskModal />
     </div>
   );
 };

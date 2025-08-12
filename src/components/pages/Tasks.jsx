@@ -1,21 +1,23 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { format } from "date-fns";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/atoms/Card";
-import Badge from "@/components/atoms/Badge";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import TeamMemberAvatar from "@/components/molecules/TeamMemberAvatar";
-import ApperIcon from "@/components/ApperIcon";
+import { toast } from "react-toastify";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
 import { tasksService } from "@/services/api/tasksService";
 import { teamsService } from "@/services/api/teamsService";
 import { projectsService } from "@/services/api/projectsService";
+import ApperIcon from "@/components/ApperIcon";
+import TeamMemberAvatar from "@/components/molecules/TeamMemberAvatar";
+import Loading from "@/components/ui/Loading";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Input from "@/components/atoms/Input";
+import { cn } from "@/utils/cn";
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState([]);
+const [tasks, setTasks] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +25,17 @@ const Tasks = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
-
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const [taskFormData, setTaskFormData] = useState({
+    title: "",
+    projectId: "",
+    assigneeId: "",
+    status: "todo",
+    priority: "medium",
+    dueDate: ""
+  });
+  const [submitting, setSubmitting] = useState(false);
   const loadData = async () => {
     try {
       setLoading(true);
@@ -110,7 +122,263 @@ const Tasks = () => {
   }
 
   const statusCounts = getStatusCounts();
-  const priorityCounts = getPriorityCounts();
+const priorityCounts = getPriorityCounts();
+
+  const openTaskModal = (task = null) => {
+    if (task) {
+      setEditingTask(task);
+      setTaskFormData({
+        title: task.title,
+        projectId: task.projectId.toString(),
+        assigneeId: task.assigneeId?.toString() || "",
+        status: task.status,
+        priority: task.priority,
+        dueDate: task.dueDate ? format(new Date(task.dueDate), "yyyy-MM-dd") : ""
+      });
+    } else {
+      setEditingTask(null);
+      setTaskFormData({
+        title: "",
+        projectId: "",
+        assigneeId: "",
+        status: "todo",
+        priority: "medium",
+        dueDate: ""
+      });
+    }
+    setShowTaskModal(true);
+  };
+
+  const closeTaskModal = () => {
+    setShowTaskModal(false);
+    setEditingTask(null);
+    setTaskFormData({
+      title: "",
+      projectId: "",
+      assigneeId: "",
+      status: "todo",
+      priority: "medium",
+      dueDate: ""
+    });
+  };
+
+  const handleTaskFormChange = (field, value) => {
+    setTaskFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const validateTaskForm = () => {
+    if (!taskFormData.title.trim()) {
+      toast.error("Task title is required");
+      return false;
+    }
+    if (!taskFormData.projectId) {
+      toast.error("Please select a project");
+      return false;
+    }
+    return true;
+  };
+
+  const handleTaskSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateTaskForm()) return;
+
+    try {
+      setSubmitting(true);
+      const taskData = {
+        ...taskFormData,
+        projectId: parseInt(taskFormData.projectId),
+        assigneeId: taskFormData.assigneeId ? parseInt(taskFormData.assigneeId) : null,
+        dueDate: taskFormData.dueDate || null
+      };
+
+      if (editingTask) {
+        await tasksService.update(editingTask.Id, taskData);
+        toast.success("Task updated successfully!");
+      } else {
+        await tasksService.create(taskData);
+        toast.success("Task created successfully!");
+      }
+
+      await loadData();
+      closeTaskModal();
+    } catch (err) {
+      toast.error(editingTask ? "Failed to update task" : "Failed to create task");
+      console.error("Task submit error:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleTaskDelete = async (taskId) => {
+    if (!confirm("Are you sure you want to delete this task?")) return;
+
+    try {
+      await tasksService.delete(taskId);
+      toast.success("Task deleted successfully!");
+      await loadData();
+    } catch (err) {
+      toast.error("Failed to delete task");
+      console.error("Task delete error:", err);
+    }
+  };
+
+  const handleStatusUpdate = async (taskId, newStatus) => {
+    try {
+      await tasksService.update(taskId, { status: newStatus });
+      toast.success("Task status updated!");
+      await loadData();
+    } catch (err) {
+      toast.error("Failed to update task status");
+      console.error("Status update error:", err);
+    }
+  };
+
+  const TaskModal = () => (
+    <AnimatePresence>
+      {showTaskModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-slate-900">
+                {editingTask ? "Edit Task" : "Create New Task"}
+              </h3>
+              <Button variant="ghost" size="sm" onClick={closeTaskModal}>
+                <ApperIcon name="X" className="w-4 h-4" />
+              </Button>
+            </div>
+
+            <form onSubmit={handleTaskSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Task Title *
+                </label>
+                <Input
+                  type="text"
+                  value={taskFormData.title}
+                  onChange={(e) => handleTaskFormChange("title", e.target.value)}
+                  placeholder="Enter task title"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Project *
+                </label>
+                <select
+                  value={taskFormData.projectId}
+                  onChange={(e) => handleTaskFormChange("projectId", e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  required
+                >
+                  <option value="">Select a project</option>
+                  {projects.map(project => (
+                    <option key={project.Id} value={project.Id}>
+                      {project.code} - {project.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Assignee
+                </label>
+                <select
+                  value={taskFormData.assigneeId}
+                  onChange={(e) => handleTaskFormChange("assigneeId", e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="">Unassigned</option>
+                  {teamMembers.map(member => (
+                    <option key={member.Id} value={member.Id}>
+                      {member.name} - {member.role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Status
+                  </label>
+                  <select
+                    value={taskFormData.status}
+                    onChange={(e) => handleTaskFormChange("status", e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="todo">To Do</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Priority
+                  </label>
+                  <select
+                    value={taskFormData.priority}
+                    onChange={(e) => handleTaskFormChange("priority", e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Due Date
+                </label>
+                <Input
+                  type="date"
+                  value={taskFormData.dueDate}
+                  onChange={(e) => handleTaskFormChange("dueDate", e.target.value)}
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex-1"
+                >
+                  {submitting ? (
+                    <>
+                      <ApperIcon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+                      {editingTask ? "Updating..." : "Creating..."}
+                    </>
+                  ) : (
+                    <>
+                      <ApperIcon name={editingTask ? "Save" : "Plus"} className="w-4 h-4 mr-2" />
+                      {editingTask ? "Update Task" : "Create Task"}
+                    </>
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={closeTaskModal}
+                  disabled={submitting}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <div className="space-y-6">
@@ -124,7 +392,7 @@ const Tasks = () => {
           <h1 className="text-3xl font-bold gradient-text">Tasks</h1>
           <p className="text-slate-600 mt-2">Track and manage all project tasks</p>
         </div>
-        <Button className="mt-4 md:mt-0">
+<Button onClick={() => openTaskModal()} className="mt-4 md:mt-0">
           <ApperIcon name="Plus" className="w-4 h-4 mr-2" />
           New Task
         </Button>
@@ -269,9 +537,9 @@ const Tasks = () => {
         <Empty
           title={searchTerm || statusFilter !== "all" || priorityFilter !== "all" ? "No tasks match your filters" : "No tasks yet"}
           description={searchTerm || statusFilter !== "all" || priorityFilter !== "all" ? "Try adjusting your search or filter criteria" : "Create your first task to get started"}
-          action={!searchTerm && statusFilter === "all" && priorityFilter === "all" ? {
+action={!searchTerm && statusFilter === "all" && priorityFilter === "all" ? {
             label: "Create Task",
-            onClick: () => {},
+            onClick: () => openTaskModal(),
             icon: "Plus"
           } : undefined}
         />
@@ -335,9 +603,37 @@ const Tasks = () => {
                           </div>
                         )}
                         
-                        <Button variant="ghost" size="sm">
-                          <ApperIcon name="MoreVertical" className="w-4 h-4" />
-                        </Button>
+<div className="flex items-center space-x-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => openTaskModal(task)}
+                            title="Edit task"
+                          >
+                            <ApperIcon name="Edit2" className="w-4 h-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleTaskDelete(task.Id)}
+                            title="Delete task"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <ApperIcon name="Trash2" className="w-4 h-4" />
+                          </Button>
+                          <div className="relative">
+                            <select
+                              value={task.status}
+                              onChange={(e) => handleStatusUpdate(task.Id, e.target.value)}
+                              className="text-xs px-2 py-1 border border-slate-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                              title="Change status"
+                            >
+                              <option value="todo">To Do</option>
+                              <option value="in-progress">In Progress</option>
+                              <option value="completed">Completed</option>
+                            </select>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -346,7 +642,9 @@ const Tasks = () => {
             );
           })}
         </div>
-      )}
+)}
+      
+      <TaskModal />
     </div>
   );
 };
